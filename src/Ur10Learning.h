@@ -2,8 +2,8 @@
 
 #include <mc_control/mc_controller.h>
 
-#include "api.h"
 
+#include "api.h"
 enum ControlState
 {
   IDLE = 0,
