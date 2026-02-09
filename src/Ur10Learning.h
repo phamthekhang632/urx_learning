@@ -2,13 +2,12 @@
 
 #include <mc_control/mc_controller.h>
 
-
 #include "api.h"
 enum ControlState
 {
   IDLE = 0,
-  MOVE_BACKWARD,
-  MOVE_FORWARD
+  MOVE_UP,
+  MOVE_DOWN
 };
 
 struct Ur10Learning_DLLAPI Ur10Learning : public mc_control::MCController
@@ -18,6 +17,10 @@ struct Ur10Learning_DLLAPI Ur10Learning : public mc_control::MCController
   void reset(const mc_control::ControllerResetData & reset_data) override;
   
   private:
-    mc_rtc::Configuration config{};
+    void switch_target();
+
     ControlState phase_ = IDLE;
+    std::string moveJoint = "wrist_1_joint";
+    double jointAngDefault = -M_PI / 2;
+    double moveMag = M_PI / 6;
 };
