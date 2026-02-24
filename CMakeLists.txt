@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.10)
 set(CXX_DISABLE_WERROR 1)
 set(CMAKE_CXX_STANDARD 11)
 
-set(PROJECT_NAME Ur10Learning)
-set(PROJECT_DESCRIPTION "Ur10Learning")
+set(PROJECT_NAME UrXLearning)
+set(PROJECT_DESCRIPTION "UrXLearning")
 set(PROJECT_URL "")
 
 project(${PROJECT_NAME} CXX)
@@ -17,6 +17,6 @@ endif()
 add_subdirectory(src)
 
 set(AROBASE "@")
-configure_file(etc/Ur10Learning.in.yaml "${CMAKE_CURRENT_BINARY_DIR}/etc/Ur10Learning.yaml")
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/etc/Ur10Learning.yaml" DESTINATION "${MC_CONTROLLER_RUNTIME_INSTALL_PREFIX}/etc")
+configure_file(etc/UrXLearning.in.yaml "${CMAKE_CURRENT_BINARY_DIR}/etc/UrXLearning.yaml")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/etc/UrXLearning.yaml" DESTINATION "${MC_CONTROLLER_RUNTIME_INSTALL_PREFIX}/etc")
 

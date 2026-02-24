@@ -10,9 +10,9 @@ enum ControlState
   MOVE_DOWN
 };
 
-struct Ur10Learning_DLLAPI Ur10Learning : public mc_control::MCController
+struct UrXLearning_DLLAPI UrXLearning : public mc_control::MCController
 {
-  Ur10Learning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config);
+  UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config);
   bool run() override;
   void reset(const mc_control::ControllerResetData & reset_data) override;
   

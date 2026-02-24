@@ -1,6 +1,6 @@
-#include "Ur10Learning.h"
+#include "UrXLearning.h"
 
-Ur10Learning::Ur10Learning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config)
+UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config)
 : mc_control::MCController(rm, dt)
 {
   solver().addConstraintSet(contactConstraint);
@@ -11,10 +11,10 @@ Ur10Learning::Ur10Learning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc:
   postureTask->weight(1);
   solver().addTask(postureTask);
 
-  mc_rtc::log::success("Ur10Learning init done ");
+  mc_rtc::log::success("UrXLearning init done ");
 }
 
-bool Ur10Learning::run()
+bool UrXLearning::run()
 {  
   if(postureTask->eval().norm() < 0.02 && postureTask->speed().norm() < 0.01) {
     switch_target();
@@ -22,12 +22,12 @@ bool Ur10Learning::run()
   return mc_control::MCController::run();
 }
 
-void Ur10Learning::reset(const mc_control::ControllerResetData & reset_data)
+void UrXLearning::reset(const mc_control::ControllerResetData & reset_data)
 {
   mc_control::MCController::reset(reset_data);
 }
 
-void Ur10Learning::switch_target()
+void UrXLearning::switch_target()
 {
   std::map<std::string, std::vector<double>> jointTarget;
   switch (phase_)
@@ -59,4 +59,4 @@ void Ur10Learning::switch_target()
   }
 }
 
-CONTROLLER_CONSTRUCTOR("Ur10Learning", Ur10Learning)
+CONTROLLER_CONSTRUCTOR("UrXLearning", UrXLearning)
