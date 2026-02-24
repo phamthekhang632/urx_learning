@@ -7,7 +7,7 @@ Ur10Learning::Ur10Learning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc:
   solver().addConstraintSet(selfCollisionConstraint);
   solver().addConstraintSet(dynamicsConstraint);
   solver().addConstraintSet(compoundJointConstraint);
-  postureTask->stiffness(0.5);
+  postureTask->setGains(0.5, 1.4);
   postureTask->weight(1);
   solver().addTask(postureTask);
 
@@ -37,8 +37,10 @@ void Ur10Learning::switch_target()
       ({
         {"shoulder_pan_joint", {M_PI / 2}}, 
         {"shoulder_lift_joint", {-M_PI / 2}},
-        {"elbow_joint", {M_PI / 2}},
-        {"wrist_1_joint", {jointAngDefault}}
+        {"elbow_joint", {-M_PI / 2}},
+        {"wrist_1_joint", {jointAngDefault}},
+        {"wrist_2_joint", {M_PI / 2}},
+        {"wrist_3_joint", {0}}
       });
       phase_ = MOVE_UP;
       break;

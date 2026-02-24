@@ -21,6 +21,6 @@ struct Ur10Learning_DLLAPI Ur10Learning : public mc_control::MCController
 
     ControlState phase_ = IDLE;
     std::string moveJoint = "wrist_1_joint";
-    double jointAngDefault = -M_PI / 2;
+    double jointAngDefault = 0;
     double moveMag = M_PI / 6;
 };

@@ -1,4 +1,4 @@
-MainRobot: UR10
+MainRobot: UR5e
 Enabled: Ur10Learning
 Timestep: 0.001
 
@@ -6,6 +6,6 @@ LogPolicy : threaded
 
 RTDE:
   ControlMode: Position
-  ur10:
-    ip: "192.168.1.3"
+  ur5e:
+    ip: "192.168.1.6"
     driver: "ur_rtde"
