@@ -12,15 +12,15 @@ enum ControlState
 
 struct UrXLearning_DLLAPI UrXLearning : public mc_control::MCController
 {
-  UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config);
+  UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration &config);
   bool run() override;
-  void reset(const mc_control::ControllerResetData & reset_data) override;
-  
-  private:
-    void switch_target();
+  void reset(const mc_control::ControllerResetData &reset_data) override;
 
-    ControlState phase_ = IDLE;
-    std::string moveJoint = "wrist_1_joint";
-    double jointAngDefault = 0;
-    double moveMag = M_PI / 6;
+private:
+  void switch_target();
+
+  ControlState phase_ = IDLE;
+  std::string moveJoint = "wrist_1_joint";
+  double jointAngDefault = 0;
+  double moveMag = M_PI / 6;
 };
