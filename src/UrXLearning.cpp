@@ -1,15 +1,24 @@
 #include "UrXLearning.h"
 
+#include <mc_rbdyn/RobotLoader.h>
+#include <thread>
+#include <chrono>
+
 UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration &config)
-    : mc_control::MCController(rm, dt)
+    : mc_control::MCController(
+          {rm,
+           mc_rbdyn::RobotLoader::get_robot_module("robotiq_arg85"),
+           mc_rbdyn::RobotLoader::get_robot_module("env/ground")},
+          dt)
 {
   solver().addConstraintSet(contactConstraint);
   solver().addConstraintSet(selfCollisionConstraint);
-  solver().addConstraintSet(dynamicsConstraint);
-  solver().addConstraintSet(compoundJointConstraint);
   postureTask->setGains(0.5, 1.4);
   postureTask->weight(1);
   solver().addTask(postureTask);
+  solver().setContacts({{}});
+
+  addContact({"ur5e", "ground", "Base", "AllGround"});
 
   mc_rtc::log::success("UrXLearning init done ");
 }
@@ -26,7 +35,13 @@ bool UrXLearning::run()
 void UrXLearning::reset(const mc_control::ControllerResetData &reset_data)
 {
   mc_control::MCController::reset(reset_data);
+  // robot(1) = robotiq_arg85
+  robots().robot(1).posW(
+      sva::PTransformd(sva::RotX(-M_PI / 2), Eigen::Vector3d(0.8172, 0.23, 0.0628)));
+  addContact({"ur5e", "robotiq_arg85", "Tool", "Base"});
 }
+
+CONTROLLER_CONSTRUCTOR("UrXLearning", UrXLearning)
 
 void UrXLearning::switch_target()
 {
@@ -51,5 +66,3 @@ void UrXLearning::switch_target()
     break;
   }
 }
-
-CONTROLLER_CONSTRUCTOR("UrXLearning", UrXLearning)
