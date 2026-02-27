@@ -18,9 +18,16 @@ struct UrXLearning_DLLAPI UrXLearning : public mc_control::MCController
 
 private:
   void switch_target();
-
   ControlState phase_ = IDLE;
+
   std::string moveJoint = "wrist_1_joint";
   double jointAngDefault = 0;
   double moveMag = M_PI / 6;
+  std::map<std::string, std::vector<double>> defaultPosture = {
+      {"shoulder_pan_joint", {M_PI / 2}},
+      {"shoulder_lift_joint", {-M_PI / 2}},
+      {"elbow_joint", {-M_PI / 2}},
+      {"wrist_1_joint", {jointAngDefault}},
+      {"wrist_2_joint", {M_PI / 2}},
+      {"wrist_3_joint", {0}}};
 };

@@ -34,12 +34,7 @@ void UrXLearning::switch_target()
   switch (phase_)
   {
   case IDLE:
-    postureTask->target({{"shoulder_pan_joint", {M_PI / 2}},
-                         {"shoulder_lift_joint", {-M_PI / 2}},
-                         {"elbow_joint", {-M_PI / 2}},
-                         {"wrist_1_joint", {jointAngDefault}},
-                         {"wrist_2_joint", {M_PI / 2}},
-                         {"wrist_3_joint", {0}}});
+    postureTask->target(defaultPosture);
     phase_ = MOVE_UP;
     break;
 
