@@ -37,6 +37,9 @@ void UrXLearning::reset(const mc_control::ControllerResetData &reset_data)
   robots().robot(1).posW(
       sva::PTransformd(sva::RotX(-M_PI / 2), Eigen::Vector3d(0.8172, 0.2329, 0.0628)));
   addContact({"ur5e", "robotiq_arg85", "Tool", "Base"});
+
+  gripperPostureTask_ = std::make_shared<mc_tasks::PostureTask>(solver(), 1);
+  solver().addTask(gripperPostureTask_);
 }
 
 CONTROLLER_CONSTRUCTOR("UrXLearning", UrXLearning)
@@ -54,12 +57,14 @@ void UrXLearning::switch_target()
   case MOVE_UP:
     jointTarget[moveJoint] = {jointAngDefault + moveMag};
     postureTask->target(jointTarget);
+    gripperPostureTask_->target(gripperClose);
     phase_ = MOVE_DOWN;
     break;
 
   case MOVE_DOWN:
     jointTarget[moveJoint] = {jointAngDefault - moveMag};
     postureTask->target(jointTarget);
+    gripperPostureTask_->target(gripperOpen);
     phase_ = MOVE_UP;
     break;
   }

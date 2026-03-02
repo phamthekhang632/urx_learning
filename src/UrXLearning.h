@@ -20,6 +20,7 @@ private:
   void switch_target();
   ControlState phase_ = IDLE;
 
+  // UR5e
   std::string moveJoint = "wrist_1_joint";
   double jointAngDefault = 0;
   double moveMag = M_PI / 6;
@@ -30,4 +31,9 @@ private:
       {"wrist_1_joint", {jointAngDefault}},
       {"wrist_2_joint", {M_PI / 2}},
       {"wrist_3_joint", {0}}};
+
+  // robotiq_arg85
+  std::map<std::string, std::vector<double>> gripperClose = {{"finger_joint", {0.0}}};
+  std::map<std::string, std::vector<double>> gripperOpen = {{"finger_joint", {0.725}}};
+  std::shared_ptr<mc_tasks::PostureTask> gripperPostureTask_;
 };
