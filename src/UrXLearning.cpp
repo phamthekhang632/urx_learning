@@ -37,7 +37,7 @@ void UrXLearning::reset(const mc_control::ControllerResetData &reset_data)
   mc_control::MCController::reset(reset_data);
   // robot(1) = robotiq_arg85
   robots().robot(1).posW(
-      sva::PTransformd(sva::RotX(-M_PI / 2), Eigen::Vector3d(0.8172, 0.23, 0.0628)));
+      sva::PTransformd(sva::RotX(-M_PI / 2), Eigen::Vector3d(0.8172, 0.2329, 0.0628)));
   addContact({"ur5e", "robotiq_arg85", "Tool", "Base"});
 }
 
