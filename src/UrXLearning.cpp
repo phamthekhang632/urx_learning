@@ -18,8 +18,6 @@ UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::C
   solver().addTask(postureTask);
   solver().setContacts({{}});
 
-  addContact({"ur5e", "ground", "Base", "AllGround"});
-
   mc_rtc::log::success("UrXLearning init done ");
 }
 
