@@ -25,7 +25,7 @@ private:
   double jointAngDefault = 0;
   double moveMag = M_PI / 6;
   std::map<std::string, std::vector<double>> defaultPosture = {
-      {"shoulder_pan_joint", {M_PI / 2}},
+      {"shoulder_pan_joint", {25 * M_PI / 180}},
       {"shoulder_lift_joint", {-M_PI / 2}},
       {"elbow_joint", {-M_PI / 2}},
       {"wrist_1_joint", {jointAngDefault}},
