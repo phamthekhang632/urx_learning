@@ -18,6 +18,7 @@ struct UrXLearning_DLLAPI UrXLearning : public mc_control::MCController
 
 private:
   void switch_target();
+  void gripper_control(bool enable = true);
   ControlState phase_ = IDLE;
 
   // UR5e
@@ -29,7 +30,7 @@ private:
       {"wrist_1_joint", {jointAngDefault}},      {"wrist_2_joint", {M_PI / 2}},        {"wrist_3_joint", {0}}};
 
   // robotiq_arg85
-  std::map<std::string, std::vector<double>> gripperClose = {{"finger_joint", {0.0}}};
-  std::map<std::string, std::vector<double>> gripperOpen = {{"finger_joint", {0.725}}};
+  std::map<std::string, std::vector<double>> gripperOpen = {{"finger_joint", {0.0}}};
+  std::map<std::string, std::vector<double>> gripperClose = {{"finger_joint", {0.725}}};
   std::shared_ptr<mc_tasks::PostureTask> gripperPostureTask_;
 };

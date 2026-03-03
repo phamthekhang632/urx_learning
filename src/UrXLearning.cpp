@@ -43,6 +43,8 @@ CONTROLLER_CONSTRUCTOR("UrXLearning", UrXLearning)
 
 void UrXLearning::switch_target()
 {
+  gripper_control();
+
   std::map<std::string, std::vector<double>> jointTarget;
   switch(phase_)
   {
@@ -54,15 +56,30 @@ void UrXLearning::switch_target()
     case MOVE_UP:
       jointTarget[moveJoint] = {jointAngDefault + moveMag};
       postureTask->target(jointTarget);
-      gripperPostureTask_->target(gripperClose);
       phase_ = MOVE_DOWN;
       break;
 
     case MOVE_DOWN:
       jointTarget[moveJoint] = {jointAngDefault - moveMag};
       postureTask->target(jointTarget);
-      gripperPostureTask_->target(gripperOpen);
       phase_ = MOVE_UP;
       break;
+  }
+}
+
+void UrXLearning::gripper_control(bool enable)
+{
+  if(enable)
+  {
+    switch(phase_)
+    {
+      case MOVE_UP:
+        gripperPostureTask_->target(gripperClose);
+        break;
+
+      case MOVE_DOWN:
+        gripperPostureTask_->target(gripperOpen);
+        break;
+    }
   }
 }
