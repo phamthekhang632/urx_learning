@@ -5,9 +5,7 @@
 #include <thread>
 
 UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config)
-: mc_control::MCController({rm, mc_rbdyn::RobotLoader::get_robot_module("robotiq_arg85"),
-                            mc_rbdyn::RobotLoader::get_robot_module("env/ground")},
-                           dt)
+: mc_control::MCController({rm, mc_rbdyn::RobotLoader::get_robot_module("robotiq_arg85")}, dt)
 {
   solver().addConstraintSet(contactConstraint);
   solver().addConstraintSet(selfCollisionConstraint);
@@ -31,8 +29,7 @@ bool UrXLearning::run()
 void UrXLearning::reset(const mc_control::ControllerResetData & reset_data)
 {
   mc_control::MCController::reset(reset_data);
-  // robot(1) = robotiq_arg85
-  robots().robot(1).posW(robots().robot(0).surfacePose("Tool"));
+  robots().robot("robotiq_arg85").posW(robots().robot("ur5e").surfacePose("Tool"));
   addContact({"ur5e", "robotiq_arg85", "Tool", "Base"});
 
   gripperPostureTask_ = std::make_shared<mc_tasks::PostureTask>(solver(), 1);
