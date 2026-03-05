@@ -32,6 +32,11 @@ void UrXLearning::reset(const mc_control::ControllerResetData & reset_data)
   robots().robot("robotiq_arg85").posW(robots().robot("ur5e").surfacePose("Tool"));
   addContact({"ur5e", "robotiq_arg85", "Tool", "Base"});
 
+  for(auto & robot : robots())
+  {
+    print_robot_state(robot);
+  }
+
   gripperPostureTask_ = std::make_shared<mc_tasks::PostureTask>(solver(), 1);
   solver().addTask(gripperPostureTask_);
 }
@@ -79,4 +84,27 @@ void UrXLearning::gripper_control(bool enable)
         break;
     }
   }
+}
+
+void UrXLearning::print_robot_state(mc_rbdyn::Robot & robot)
+{
+  int dof = 0;
+  for(const auto & joint : robot.mb().joints())
+  {
+    if(joint.dof() == 1 && !joint.isMimic())
+    {
+      dof++;
+    }
+  }
+
+  mc_rtc::log::info("DOF of {} is {}", robot.name(), dof);
+
+  std::vector<double> qIn(dof, 0.0);
+  std::string qString = "";
+  for(int i = 0; i < dof; ++i)
+  {
+    qIn[i] = robot.mbc().q[robot.jointIndexInMBC(i)][0];
+    qString += " " + std::to_string(qIn[i]);
+  }
+  mc_rtc::log::info("qIn ={}", qString);
 }
