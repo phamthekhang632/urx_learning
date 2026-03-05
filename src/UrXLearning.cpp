@@ -21,7 +21,7 @@ bool UrXLearning::run()
 {
   if(postureTask->eval().norm() < 0.02 && postureTask->speed().norm() < 0.01)
   {
-    switch_target();
+    switch_target(true);
   }
   return mc_control::MCController::run();
 }
@@ -38,9 +38,9 @@ void UrXLearning::reset(const mc_control::ControllerResetData & reset_data)
 
 CONTROLLER_CONSTRUCTOR("UrXLearning", UrXLearning)
 
-void UrXLearning::switch_target()
+void UrXLearning::switch_target(bool gripper_enable)
 {
-  gripper_control();
+  gripper_control(gripper_enable);
 
   std::map<std::string, std::vector<double>> jointTarget;
   switch(phase_)

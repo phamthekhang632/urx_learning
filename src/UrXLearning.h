@@ -17,7 +17,7 @@ struct UrXLearning_DLLAPI UrXLearning : public mc_control::MCController
   void reset(const mc_control::ControllerResetData & reset_data) override;
 
 private:
-  void switch_target();
+  void switch_target(bool gripper_enable);
   void gripper_control(bool enable = true);
   ControlState phase_ = IDLE;
 
