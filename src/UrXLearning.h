@@ -33,7 +33,7 @@ private:
       {"wrist_3_joint", {0}}};
 
   // robotiq_arg85
-  std::map<std::string, std::vector<double>> gripperClose = {{"finger_joint", {0.0}}};
-  std::map<std::string, std::vector<double>> gripperOpen = {{"finger_joint", {0.725}}};
+  std::map<std::string, std::vector<double>> gripperOpen = {{"finger_joint", {0.0}}};
+  std::map<std::string, std::vector<double>> gripperClose = {{"finger_joint", {0.725}}};
   std::shared_ptr<mc_tasks::PostureTask> gripperPostureTask_;
 };
