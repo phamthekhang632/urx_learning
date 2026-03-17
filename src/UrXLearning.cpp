@@ -35,7 +35,7 @@ void UrXLearning::reset(const mc_control::ControllerResetData & reset_data)
 {
   mc_control::MCController::reset(reset_data);
   // robot(1) = robotiq_arg85
-  robots().robot(1).posW(sva::PTransformd(sva::RotX(-M_PI / 2), Eigen::Vector3d(0.8172, 0.2329, 0.0628)));
+  robots().robot(1).posW(robots().robot(0).surfacePose("Tool"));
   addContact({"ur5e", "robotiq_arg85", "Tool", "Base"});
 
   gripperPostureTask_ = std::make_shared<mc_tasks::PostureTask>(solver(), 1);
