@@ -1,0 +1,26 @@
+MainRobot: UR5e
+Enabled: [UrXLearning]
+Timestep: 0.001
+
+LogPolicy : threaded
+
+RTDE:
+  ControlMode: Position # Can be: Position/Velocity/Torque
+
+  ur5e:
+    ip: "192.168.1.6"
+    driver: "ur_rtde"
+    gripper:
+      name: "robotiq_arg85"
+      type: robotiq
+
+  ur5e_gripper:
+    ip: "192.168.1.6"
+    driver: "ur_rtde"
+    gripper:
+      name: "robotiq_arg85"
+      type: robotiq
+
+  # ur10:
+  #   ip: "192.168.1.7"
+  #   driver: "ur_rtde"
