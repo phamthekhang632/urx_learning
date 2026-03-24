@@ -3,6 +3,14 @@
 #include <mc_control/mc_controller.h>
 
 #include "api.h"
+
+enum Mode
+{
+  POSTURE = 0,
+  OSCILLATE,
+  STORE
+};
+
 enum ControlState
 {
   IDLE = 0,
@@ -23,6 +31,9 @@ struct UrXLearning_DLLAPI UrXLearning : public mc_control::MCController
   void reset(const mc_control::ControllerResetData & reset_data) override;
 
 private:
+  const Mode mode = POSTURE;
+  std::shared_ptr<mc_tasks::PostureTask> postureTask_;
+
   void switch_target();
   ControlState phase_ = IDLE;
 

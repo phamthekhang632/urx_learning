@@ -4,16 +4,17 @@
 #include <chrono>
 #include <thread>
 
-UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config)
-: mc_control::MCController({rm, mc_rbdyn::RobotLoader::get_robot_module("robotiq_arg85"),
-                            mc_rbdyn::RobotLoader::get_robot_module("env/ground")},
-                           dt)
+UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration &config)
+    : mc_control::MCController(rm, dt)
 {
   solver().addConstraintSet(contactConstraint);
-  solver().addConstraintSet(selfCollisionConstraint);
-  postureTask->setGains(0.5, 1.4);
-  postureTask->weight(1);
-  solver().addTask(postureTask);
+  solver().addConstraintSet(kinematicsConstraint);
+  if (mode != POSTURE)
+  {
+    postureTask->setGains(0.5, 1.4);
+    postureTask->weight(1);
+    solver().addTask(postureTask);
+  }
   solver().setContacts({{}});
 
   mc_rtc::log::success("UrXLearning init done ");
@@ -21,9 +22,12 @@ UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::C
 
 bool UrXLearning::run()
 {
-  if(postureTask->eval().norm() < 0.02 && postureTask->speed().norm() < 0.01)
+  if (mode == POSTURE)
   {
-    if(false)
+  }
+  else if (postureTask->eval().norm() < 0.02 && postureTask->speed().norm() < 0.01)
+  {
+    if (mode == OSCILLATE)
       switch_target();
     else
       store_target();
@@ -34,12 +38,18 @@ bool UrXLearning::run()
 void UrXLearning::reset(const mc_control::ControllerResetData & reset_data)
 {
   mc_control::MCController::reset(reset_data);
-  // robot(1) = robotiq_arg85
-  robots().robot(1).posW(robots().robot(0).surfacePose("Tool"));
-  addContact({"ur5e", "robotiq_arg85", "Tool", "Base"});
 
-  gripperPostureTask_ = std::make_shared<mc_tasks::PostureTask>(solver(), 1);
-  solver().addTask(gripperPostureTask_);
+  auto robot_module = robot().module();
+  auto connect_rm = mc_rbdyn::RobotLoader::get_robot_module("robotiq_arg85");
+  // Connect two robot modules
+  auto connect = robot_module.connect(
+      *connect_rm, "wrist_3_link", "robotiq_85_base_link", "",
+      mc_rbdyn::RobotModule::ConnectionParameters{}.X_other_connection(sva::RotZ(mc_rtc::constants::PI)));
+  connect.name = "ur5e_gripper";
+  loadRobot(connect, connect.name);
+  gui()->removeElement({"Robots"}, robot().name());
+  postureTask_ = std::make_shared<mc_tasks::PostureTask>(solver(), robots().robotIndex(connect.name));
+  solver().addTask(postureTask_);
 }
 
 CONTROLLER_CONSTRUCTOR("UrXLearning", UrXLearning)
