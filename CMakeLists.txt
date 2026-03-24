@@ -17,6 +17,7 @@ endif()
 add_subdirectory(src)
 
 set(AROBASE "@")
-configure_file(etc/UrXLearning.in.yaml "${CMAKE_CURRENT_BINARY_DIR}/etc/UrXLearning.yaml")
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/etc/UrXLearning.yaml" DESTINATION "${MC_CONTROLLER_RUNTIME_INSTALL_PREFIX}/etc")
-
+configure_file(etc/UrXLearning.in.yaml
+               "${CMAKE_CURRENT_BINARY_DIR}/etc/UrXLearning.yaml")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/etc/UrXLearning.yaml"
+        DESTINATION "${MC_CONTROLLER_RUNTIME_INSTALL_PREFIX}/etc")

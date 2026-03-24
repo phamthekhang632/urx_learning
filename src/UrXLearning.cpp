@@ -4,12 +4,12 @@
 #include <chrono>
 #include <thread>
 
-UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration &config)
-    : mc_control::MCController(rm, dt)
+UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config)
+: mc_control::MCController(rm, dt)
 {
   solver().addConstraintSet(contactConstraint);
   solver().addConstraintSet(kinematicsConstraint);
-  if (mode != POSTURE)
+  if(mode != POSTURE)
   {
     postureTask->setGains(0.5, 1.4);
     postureTask->weight(1);
@@ -22,12 +22,12 @@ UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::C
 
 bool UrXLearning::run()
 {
-  if (mode == POSTURE)
+  if(mode == POSTURE)
   {
   }
-  else if (postureTask->eval().norm() < 0.02 && postureTask->speed().norm() < 0.01)
+  else if(postureTask->eval().norm() < 0.02 && postureTask->speed().norm() < 0.01)
   {
-    if (mode == OSCILLATE)
+    if(mode == OSCILLATE)
       switch_target();
     else
       store_target();
