@@ -10,17 +10,8 @@ RTDE:
   ur5e:
     ip: "192.168.1.6"
     driver: "ur_rtde"
-    gripper:
-      name: "robotiq_arg85"
-      type: robotiq
-
-  ur5e_gripper:
-    ip: "192.168.1.6"
-    driver: "ur_rtde"
-    gripper:
-      name: "robotiq_arg85"
-      type: robotiq
-
-  # ur10:
-  #   ip: "192.168.1.7"
-  #   driver: "ur_rtde"
+    ur5e_gripper:
+      robotiq_arg85:
+        type: robotiq
+        # ip: "localhost" # [Optional] Robot's ip is used by default
+        # port: 63352 # [Optional]

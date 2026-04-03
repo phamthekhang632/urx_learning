@@ -4,24 +4,17 @@
 
 #include "api.h"
 
-enum Mode
-{
-  POSTURE = 0,
-  OSCILLATE,
-  STORE
-};
-
-enum ControlState
+enum class ToolState
 {
   IDLE = 0,
-  MOVE_UP,
-  MOVE_DOWN
+  DEFAULT,
+  GRIPPER
 };
 
-enum StoreState
+enum class SyncState
 {
-  START = 0,
-  TURN
+  IDLE = 0,
+  SYNCING
 };
 
 struct UrXLearning_DLLAPI UrXLearning : public mc_control::MCController
@@ -31,29 +24,21 @@ struct UrXLearning_DLLAPI UrXLearning : public mc_control::MCController
   void reset(const mc_control::ControllerResetData & reset_data) override;
 
 private:
-  const Mode mode = POSTURE;
-  std::shared_ptr<mc_tasks::PostureTask> postureTask_;
+  ToolState tool_state = ToolState::IDLE;
+  SyncState sync_state = SyncState::IDLE;
+  std::string base_robot = "";
+  std::string gripper_robot = "";
+  std::shared_ptr<mc_tasks::PostureTask> posture_task;
 
-  void switch_target();
-  ControlState phase_ = IDLE;
+  mc_rbdyn::RobotModule connectModules(const mc_rbdyn::RobotModule & robot,
+                                       const mc_rbdyn::RobotModule & tool,
+                                       const std::string robot_surface,
+                                       const std::string tool_surface,
+                                       const std::string name_suffix = "");
 
-  // UR5e
-  std::string moveJoint = "wrist_1_joint";
-  double jointAngDefault = 0;
-  double moveMag = M_PI / 6;
-  std::map<std::string, std::vector<double>> defaultPosture = {
-      {"shoulder_pan_joint", {25 * M_PI / 180}}, {"shoulder_lift_joint", {-M_PI / 2}}, {"elbow_joint", {-M_PI / 2}},
-      {"wrist_1_joint", {jointAngDefault}},      {"wrist_2_joint", {M_PI / 2}},        {"wrist_3_joint", {0}}};
+  void copyPosture(std::string robot_name, mc_tasks::PostureTask & posture_task);
 
-  // robotiq_arg85
-  std::map<std::string, std::vector<double>> gripperOpen = {{"finger_joint", {0.0}}};
-  std::map<std::string, std::vector<double>> gripperClose = {{"finger_joint", {0.725}}};
-  std::shared_ptr<mc_tasks::PostureTask> gripperPostureTask_;
+  void installGripper(const std::string & base_robot, const std::string & gripper_robot);
 
-  void store_target();
-  StoreState store_state_ = START;
-  std::map<std::string, std::vector<double>> storePoseStart = {{"shoulder_lift_joint", {-M_PI}},
-                                                               {"elbow_joint", {0.85 * M_PI}},
-                                                               {"wrist_1_joint", {-M_PI}}};
-  std::map<std::string, std::vector<double>> storePoseTurn = {{"shoulder_pan_joint", {-0.35}}};
+  void uninstallGripper(std::string base_robot, std::string gripper_robot);
 };
