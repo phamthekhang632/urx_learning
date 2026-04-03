@@ -103,6 +103,9 @@ void UrXLearning::installGripper(const std::string & base_robot, const std::stri
     if(posture_task->eval().norm() < 0.01)
     {
       mc_rtc::log::info("Posture synced");
+      gui()->removeElement({"Robots"}, base_robot);
+      addRobotToGUI(robot(gripper_robot));
+      replaceRobot.signal(base_robot, gripper_robot, "");
       sync_state = SyncState::IDLE;
       tool_state = ToolState::IDLE;
     }
@@ -125,6 +128,9 @@ void UrXLearning::uninstallGripper(std::string base_robot, std::string gripper_r
     if(postureTask->eval().norm() < 0.01)
     {
       mc_rtc::log::info("Posture synced");
+      gui()->removeElement({"Robots"}, gripper_robot);
+      addRobotToGUI(robot(base_robot));
+      replaceRobot.signal(gripper_robot, base_robot, "");
       sync_state = SyncState::IDLE;
       tool_state = ToolState::IDLE;
     }
