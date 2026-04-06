@@ -98,7 +98,7 @@ LocalRobot::LocalRobot(mc_control::MCController & controller,
                     mc_rbdyn::RobotModule::ConnectionParameters{}.X_other_connection(sva::RotZ(mc_rtc::constants::PI))))
 {
   // TODO: generalize connection box
-  module_tool_.name = name_ + tool.name;
+  module_tool_.name = name_ + "_" + tool.name;
   name_tool_ = module_tool_.name;
   mc_rtc::log::info("Attached {} to {} -> {}", tool.name, module_.name, module_tool_.name);
 
