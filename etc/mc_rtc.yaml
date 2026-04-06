@@ -1,0 +1,17 @@
+MainRobot: UR5e
+Enabled: [UrXLearning]
+Timestep: 0.001
+
+LogPolicy : threaded
+
+RTDE:
+  ControlMode: Position # Can be: Position/Velocity/Torque
+
+  ur5e:
+    ip: "192.168.1.6"
+    driver: "ur_rtde"
+    ur5e_robotiq_arg85:
+      robotiq_arg85:
+        type: robotiq
+        # ip: "localhost" # [Optional] Robot's ip is used by default
+        # port: 63352 # [Optional]
