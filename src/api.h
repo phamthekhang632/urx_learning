@@ -1,5 +1,7 @@
 #pragma once
 
+// NOLINTBEGIN(readability-identifier-naming)
+
 #if defined _WIN32 || defined __CYGWIN__
 #  define UrXLearning_DLLIMPORT __declspec(dllimport)
 #  define UrXLearning_DLLEXPORT __declspec(dllexport)
@@ -16,7 +18,7 @@
 #    define UrXLearning_DLLEXPORT
 #    define UrXLearning_DLLLOCAL
 #  endif // __GNUC__ >= 4
-#endif // defined _WIN32 || defined __CYGWIN__
+#endif   // defined _WIN32 || defined __CYGWIN__
 
 #ifdef UrXLearning_STATIC
 // If one is using the library statically, get rid of
@@ -33,3 +35,5 @@
 #  endif // UrXLearning_EXPORTS
 #  define UrXLearning_LOCAL UrXLearning_DLLLOCAL
 #endif // UrXLearning_STATIC
+
+// NOLINTEND(readability-identifier-naming)

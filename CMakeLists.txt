@@ -9,6 +9,8 @@ set(PROJECT_URL "")
 
 project(${PROJECT_NAME} CXX)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Check if the project is built inside mc_rtc
 if(NOT TARGET mc_rtc::mc_control)
   find_package(mc_rtc REQUIRED)
@@ -17,7 +19,9 @@ endif()
 add_subdirectory(src)
 
 set(AROBASE "@")
-configure_file(etc/UrXLearning.in.yaml
-               "${CMAKE_CURRENT_BINARY_DIR}/etc/UrXLearning.yaml")
+configure_file(
+  etc/UrXLearning.in.yaml "${CMAKE_CURRENT_BINARY_DIR}/etc/UrXLearning.yaml"
+)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/etc/UrXLearning.yaml"
-        DESTINATION "${MC_CONTROLLER_RUNTIME_INSTALL_PREFIX}/etc")
+        DESTINATION "${MC_CONTROLLER_RUNTIME_INSTALL_PREFIX}/etc"
+)

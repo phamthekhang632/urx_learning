@@ -13,11 +13,11 @@ struct UrXLearning_DLLAPI UrXLearning : public mc_control::MCController
   void reset(const mc_control::ControllerResetData & reset_data) override;
 
 private:
-  std::unique_ptr<LocalRobot> local_robot;
+  std::unique_ptr<LocalRobot> local_robot_;
 
-  void copyPosture(std::string robot_name, mc_tasks::PostureTask * posture_task);
+  void copyPosture(const std::string & robot_name, mc_tasks::PostureTask * posture_task);
 
   void installGripper(const std::string & base_robot, const std::string & gripper_robot);
 
-  void uninstallGripper(std::string base_robot, std::string gripper_robot);
+  void uninstallGripper(const std::string & base_robot, const std::string & gripper_robot);
 };

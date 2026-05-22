@@ -1,6 +1,6 @@
 #pragma once
 
-// #include <mc_control/mc_controller.h>
+#include <mc_control/mc_controller.h>
 
 enum class ToolState
 {
@@ -20,15 +20,15 @@ struct LocalRobot
   LocalRobot(mc_control::MCController & controller,
              const mc_rbdyn::RobotModule & robot,
              const mc_rbdyn::RobotModule & tool,
-             const std::string robot_surface,
-             const std::string tool_surface);
+             const std::string & robot_surface,
+             const std::string & tool_surface);
 
   std::string name()
   {
     return name_;
   }
 
-  std::string name_tool()
+  std::string nameTool()
   {
     return name_tool_;
   }
@@ -38,37 +38,37 @@ struct LocalRobot
     return module_;
   }
 
-  mc_rbdyn::RobotModule module_tool()
+  mc_rbdyn::RobotModule moduleTool()
   {
     return module_tool_;
   }
 
-  std::shared_ptr<mc_tasks::PostureTask> posture_task()
+  std::shared_ptr<mc_tasks::PostureTask> postureTask()
   {
     return posture_task_;
   }
 
-  std::shared_ptr<mc_tasks::PostureTask> posture_task_tool()
+  std::shared_ptr<mc_tasks::PostureTask> postureTaskTool()
   {
     return posture_task_tool_;
   }
 
-  ToolState tool_state()
+  ToolState toolState()
   {
     return tool_state_;
   }
 
-  void tool_state(ToolState s)
+  void setToolState(ToolState s)
   {
     tool_state_ = s;
   }
 
-  SyncState sync_state()
+  SyncState syncState()
   {
     return sync_state_;
   }
 
-  void sync_state(SyncState s)
+  void setSyncState(SyncState s)
   {
     sync_state_ = s;
   }
@@ -87,8 +87,8 @@ private:
 LocalRobot::LocalRobot(mc_control::MCController & controller,
                        const mc_rbdyn::RobotModule & robot,
                        const mc_rbdyn::RobotModule & tool,
-                       const std::string robot_surface,
-                       const std::string tool_surface)
+                       const std::string & robot_surface,
+                       const std::string & tool_surface)
 : name_(robot.name), module_(robot),
   module_tool_(
       robot.connect(tool,

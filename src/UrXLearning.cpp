@@ -5,7 +5,7 @@
 #include <thread>
 
 UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::Configuration & config)
-: mc_control::MCController(rm, dt)
+: mc_control::MCController(std::move(rm), dt)
 {
   solver().addConstraintSet(contactConstraint);
   solver().addConstraintSet(kinematicsConstraint);
@@ -17,15 +17,15 @@ UrXLearning::UrXLearning(mc_rbdyn::RobotModulePtr rm, double dt, const mc_rtc::C
 
 bool UrXLearning::run()
 {
-  switch(local_robot->tool_state())
+  switch(local_robot_->toolState())
   {
     case ToolState::IDLE:
       break;
     case ToolState::DEFAULT:
-      uninstallGripper(local_robot->name(), local_robot->name_tool());
+      uninstallGripper(local_robot_->name(), local_robot_->nameTool());
       break;
     case ToolState::GRIPPER:
-      installGripper(local_robot->name(), local_robot->name_tool());
+      installGripper(local_robot_->name(), local_robot_->nameTool());
       break;
   }
   return mc_control::MCController::run();
@@ -35,22 +35,24 @@ void UrXLearning::reset(const mc_control::ControllerResetData & reset_data)
 {
   mc_control::MCController::reset(reset_data);
 
-  mc_rbdyn::RobotModule gripper_module = *(mc_rbdyn::RobotLoader::get_robot_module("robotiq_arg85"));
-  local_robot =
-      std::make_unique<LocalRobot>(*this, robot().module(), gripper_module, "wrist_3_link", "robotiq_85_base_link");
+  auto gripper_module = mc_rbdyn::RobotLoader::get_robot_module("robotiq_arg85");
+  local_robot_ =
+      std::make_unique<LocalRobot>(*this, robot().module(), *gripper_module, "wrist_3_link", "robotiq_85_base_link");
 
   gui()->addElement({"Change Tool"}, mc_rtc::gui::Button(fmt::format("Install gripper"),
-                                                         [&]() { local_robot->tool_state(ToolState::GRIPPER); }));
+                                                         [&]() { local_robot_->setToolState(ToolState::GRIPPER); }));
   gui()->addElement({"Change Tool"}, mc_rtc::gui::Button(fmt::format("Uninstall gripper"),
-                                                         [&]() { local_robot->tool_state(ToolState::DEFAULT); }));
+                                                         [&]() { local_robot_->setToolState(ToolState::DEFAULT); }));
 }
 
-CONTROLLER_CONSTRUCTOR("UrXLearning", UrXLearning)
+CONTROLLER_CONSTRUCTOR("UrXLearning", UrXLearning) // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
-// TODO: move copyPosture to LocalRobot.h
-void UrXLearning::copyPosture(std::string robot_name, mc_tasks::PostureTask * posture_task)
+void UrXLearning::copyPosture(const std::string & robot_name, mc_tasks::PostureTask * posture_task)
 {
-  if(!posture_task) return;
+  if(posture_task == nullptr)
+  {
+    return;
+  }
 
   std::map<std::string, std::vector<double>> current_target;
   const std::vector<std::string> & rjo = robot(robot_name).refJointOrder();
@@ -59,58 +61,58 @@ void UrXLearning::copyPosture(std::string robot_name, mc_tasks::PostureTask * po
   for(size_t i = 0; i < num_joints; ++i)
   {
     const auto & joint_name = rjo[i];
-    auto jIndex = robot(robot_name).jointIndexByName(joint_name);
-    current_target[joint_name] = robot(robot_name).mbc().q[jIndex];
+    auto joint_index = robot(robot_name).jointIndexByName(joint_name);
+    current_target[joint_name] = robot(robot_name).mbc().q[joint_index];
   }
   posture_task->target(current_target);
 }
 
 void UrXLearning::installGripper(const std::string & base_robot, const std::string & gripper_robot)
 {
-  if(local_robot->sync_state() == SyncState::IDLE)
+  if(local_robot_->syncState() == SyncState::IDLE)
   {
     mc_rtc::log::info("Installing gripper - starting sync");
     if(hasRobot(gripper_robot))
     {
-      copyPosture(base_robot, local_robot->posture_task_tool().get());
-      local_robot->sync_state(SyncState::SYNCING);
+      copyPosture(base_robot, local_robot_->postureTaskTool().get());
+      local_robot_->setSyncState(SyncState::SYNCING);
     }
   }
-  else if(local_robot->sync_state() == SyncState::SYNCING)
+  else if(local_robot_->syncState() == SyncState::SYNCING)
   {
-    if(local_robot->posture_task_tool()->eval().norm() < 0.01)
+    if(local_robot_->postureTaskTool()->eval().norm() < 0.01)
     {
       mc_rtc::log::info("Posture synced");
       gui()->removeElement({"Robots"}, base_robot);
       addRobotToGUI(robot(gripper_robot));
       replaceRobot.signal(base_robot, gripper_robot);
-      local_robot->sync_state(SyncState::IDLE);
-      local_robot->tool_state(ToolState::IDLE);
+      local_robot_->setSyncState(SyncState::IDLE);
+      local_robot_->setToolState(ToolState::IDLE);
     }
   }
 }
 
-void UrXLearning::uninstallGripper(std::string base_robot, std::string gripper_robot)
+void UrXLearning::uninstallGripper(const std::string & base_robot, const std::string & gripper_robot)
 {
-  if(local_robot->sync_state() == SyncState::IDLE)
+  if(local_robot_->syncState() == SyncState::IDLE)
   {
     mc_rtc::log::info("Uninstalling gripper - starting sync");
     if(hasRobot(base_robot))
     {
-      copyPosture(gripper_robot, local_robot->posture_task().get());
-      local_robot->sync_state(SyncState::SYNCING);
+      copyPosture(gripper_robot, local_robot_->postureTask().get());
+      local_robot_->setSyncState(SyncState::SYNCING);
     }
   }
-  else if(local_robot->sync_state() == SyncState::SYNCING)
+  else if(local_robot_->syncState() == SyncState::SYNCING)
   {
-    if(local_robot->posture_task()->eval().norm() < 0.01)
+    if(local_robot_->postureTask()->eval().norm() < 0.01)
     {
       mc_rtc::log::info("Posture synced");
       gui()->removeElement({"Robots"}, gripper_robot);
       addRobotToGUI(robot(base_robot));
       replaceRobot.signal(gripper_robot, base_robot);
-      local_robot->sync_state(SyncState::IDLE);
-      local_robot->tool_state(ToolState::IDLE);
+      local_robot_->setSyncState(SyncState::IDLE);
+      local_robot_->setToolState(ToolState::IDLE);
     }
   }
 }
